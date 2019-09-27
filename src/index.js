@@ -4,25 +4,25 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import ApolloClient from 'apollo-boost';
-import { gql } from "apollo-boost";
-import { useMutation } from '@apollo/react-hooks';
+// import ApolloClient from 'apollo-boost';
+// import { gql } from "apollo-boost";
+// import { useMutation } from '@apollo/react-hooks';
 
 
 
-const client = new ApolloClient({
-    uri: 'https://test.creosafe.io/graphql',
-});
+// const client = new ApolloClient({
+//     uri: 'https://test.creosafe.io/graphql',
+// });
 
-const loginQuery = gql`
-  {
-    login(email: "buyer@creosafe.com", password: "demo03") {
-      email
-    }
-  }
-`;
+// const loginQuery = gql`
+//   {
+//     login(email: "buyer@creosafe.com", password: "demo03") {
+//       email
+//     }
+//   }
+// `;
 
-const [login, { data }] = useMutation(loginQuery);
+// const [login, { data }] = useMutation(loginQuery);
 
 
 
