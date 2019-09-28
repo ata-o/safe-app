@@ -6,6 +6,8 @@ import './App.css';
 import ApolloClient from 'apollo-boost';
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import { Query } from "react-apollo";
+
 
 const client = new ApolloClient({
     uri: 'https://test.creosafe.io/graphql',
@@ -22,9 +24,8 @@ const loginQuery = gql`
 
 // Hash ID, Seller Name, Amount, Price (ETH) and Creation Date
 const listingsQuery = gql`
-    {
       query fetchListings($count: Int!) {
-        listing (count: $count) {
+        listing(count: $count) {
           uuid
           hashid
           seller
@@ -33,33 +34,42 @@ const listingsQuery = gql`
           created_at
         }
       }
-        
-        
-    }
 `;
+//   query fetchListings($count: Int!) {
+    //     listing (count: $count) {
+    //       uuid
+    //       hashid
+    //       seller
+    //       amount
+    //       price
+    //       created_at
+    //     }
+    //   }
+    // }
 
 function Marketplace() {
-  const {data, loading, error} = useQuery(
-    listingsQuery,
-    {client, variables: {count: 10}},
-  );
-
-  console.log({data, loading, error});
+   
+  const count = 10;
+  const market = () => (
+    <Query
+      query={listingsQuery}
+      variables={{ count }}
+      >{({ loading, error, data }) => {
+        if (loading) return "Loading...";
+        if (error) return `Error! ${error.message}`;
   
-  return (
-    <div className="Marketplace">
-      {!data && <button>Fetch</button>}
-        {loading && <Loader />}
-        {error && 'Error!'}
-        {data && (
-          <>
-          <h3>listings</h3>
-          
-          </>
-        )}
-    </div>
-
+        return (
+          <div className="Marketplace">
+            <h3>fetching data</h3>
+          </div>
+      
+        );
+      }}</Query>
+      
+      
   );
+  
+  
 }
 
 function App() {
