@@ -24,9 +24,8 @@ const loginQuery = gql`
 
 // Hash ID, Seller Name, Amount, Price (ETH) and Creation Date
 const listingsQuery = gql`
-      query fetchListings($count: Int!) {
-        listing(count: $count) {
-          uuid
+      query ($orderby: Array!, $count: Int!) {
+        listing(orderby: $orderby, count: $count) {
           hashid
           seller
           amount
@@ -35,40 +34,33 @@ const listingsQuery = gql`
         }
       }
 `;
-//   query fetchListings($count: Int!) {
-    //     listing (count: $count) {
-    //       uuid
-    //       hashid
-    //       seller
-    //       amount
-    //       price
-    //       created_at
-    //     }
-    //   }
-    // }
 
-function Marketplace() {
-   
+
+function Marketplace(uuid) {
+  
   const count = 10;
-  const market = () => (
-    <Query
-      query={listingsQuery}
-      variables={{ count }}
-      >{({ loading, error, data }) => {
-        if (loading) return "Loading...";
-        if (error) return `Error! ${error.message}`;
-  
-        return (
-          <div className="Marketplace">
-            <h3>fetching data</h3>
-          </div>
-      
-        );
-      }}</Query>
-      
-      
+  const orderby = [{
+    SortOrder: 'ASC'
+  }];
+  const {data, loading, error } = useQuery(
+    listingsQuery,
+    {client, variables: { orderby, count } }
   );
-  
+
+  return (
+    <div className="Marketplace">
+        {loading && <Loader />}
+        {error && 'Error!'}
+        {data && (
+          <>
+          <h3>listings</h3>
+          
+          </>
+        )}
+    </div>
+  );
+
+
   
 }
 
@@ -89,7 +81,7 @@ function App() {
         {data && (
           <>
           <h3>Welcome {data.login.me.fullname}</h3>
-          <Marketplace />
+          <Marketplace uuid={data.login.me.uuid} />
           </>
         )}
         
