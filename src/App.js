@@ -6,7 +6,6 @@ import './App.css';
 import ApolloClient from 'apollo-boost';
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Query } from "react-apollo";
 
 
 const client = new ApolloClient({
@@ -24,13 +23,14 @@ const loginQuery = gql`
 
 // Hash ID, Seller Name, Amount, Price (ETH) and Creation Date
 const listingsQuery = gql`
-      query ($orderby: Array!, $count: Int!) {
-        listing(orderby: $orderby, count: $count) {
-          hashid
-          seller
-          amount
-          price
-          created_at
+      query ($count: Int!) {
+        marketplace(count: $count) {
+          data {
+            hashid,
+            amount,
+            price,
+            created_at
+          }
         }
       }
 `;
@@ -39,14 +39,13 @@ const listingsQuery = gql`
 function Marketplace(uuid) {
   
   const count = 10;
-  const orderby = [{
-    SortOrder: 'ASC'
-  }];
-  const {data, loading, error } = useQuery(
+  const {listings, data, loading, error } = useQuery(
     listingsQuery,
-    {client, variables: { orderby, count } }
+    {client, variables: { count, uuid } }
   );
-
+    console.log(JSON.stringify(listings));
+    
+    
   return (
     <div className="Marketplace">
         {loading && <Loader />}
