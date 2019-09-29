@@ -1,12 +1,13 @@
 import React from 'react';
 import { Loader } from 'semantic-ui-react'
+import ReactTable from'react-table' 
+import 'react-table/react-table.css'
 import './App.css';
 
 
 import ApolloClient from 'apollo-boost';
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from '@apollo/react-hooks';
-
 
 const client = new ApolloClient({
     uri: 'https://test.creosafe.io/graphql',
@@ -27,6 +28,9 @@ const listingsQuery = gql`
         marketplace(count: $count) {
           data {
             hashid,
+            seller {
+              fullname
+            }
             amount,
             price,
             created_at
@@ -35,15 +39,31 @@ const listingsQuery = gql`
       }
 `;
 
-
 function Marketplace(uuid) {
-  
-  const count = 10;
-  const {listings, data, loading, error } = useQuery(
+
+  const count = 100;
+  const {marketplace, data, loading, error } = useQuery(
     listingsQuery,
     {client, variables: { count, uuid } }
   );
-    console.log(JSON.stringify(listings));
+  console.log(marketplace);
+
+  const columns = [{
+    Header: 'HashID',
+    accessor: 'hashid'
+  }, {
+    Header: 'Seller',
+    accessor: 'seller'
+  }, {
+    Header: 'Amount',
+    accessor: 'amount'
+  }, {
+    Header: 'Price',
+    accessor: 'price'
+  }, {
+    Header: 'Date',
+    accessor: 'created_at'
+  }];
     
     
   return (
@@ -51,10 +71,10 @@ function Marketplace(uuid) {
         {loading && <Loader />}
         {error && 'Error!'}
         {data && (
-          <>
-          <h3>listings</h3>
-          
-          </>
+          <ReactTable 
+          defaultPageSize={20}
+          data={data.marketplace}
+          columns={columns} />
         )}
     </div>
   );
